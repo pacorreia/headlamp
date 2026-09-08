@@ -550,22 +550,7 @@ function PodMetricsSection(props: { pod: Pod }) {
   });
 
   return (
-    <SectionBox
-      title={t('translation|Metrics')}
-      headerProps={{
-        headerStyle: 'subsection',
-        actions: [
-          <AddToViewButton
-            item={{
-              type: 'pod-metrics',
-              cluster: pod.cluster,
-              namespace: pod.getNamespace() ?? '',
-              podName: pod.getName(),
-            }}
-          />,
-        ],
-      }}
-    >
+    <SectionBox title={t('translation|Metrics')} headerProps={{ headerStyle: 'subsection' }}>
       <Box
         sx={{
           display: 'grid',
@@ -955,6 +940,19 @@ export default function PodDetails(props: PodDetailsProps) {
                   }}
                 />
               </AuthVisible>
+            ),
+          },
+          {
+            id: 'headlamp.pod-metrics-add-to-view',
+            action: (
+              <AddToViewButton
+                item={{
+                  type: 'pod-metrics',
+                  cluster: item.cluster,
+                  namespace: item.getNamespace() ?? '',
+                  podName: item.getName(),
+                }}
+              />
             ),
           },
         ]
