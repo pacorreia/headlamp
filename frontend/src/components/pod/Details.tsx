@@ -15,6 +15,7 @@
  */
 
 import { Icon } from '@iconify/react';
+import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -32,6 +33,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { getDefaultContainer, resolveContainerName } from '../../helpers/podContainer';
 import { KubeContainerStatus } from '../../lib/k8s/cluster';
 import Pod from '../../lib/k8s/pod';
+import { PodMetrics } from '../../lib/k8s/PodMetrics';
 import { localeDate } from '../../lib/util';
 import { DefaultHeaderAction } from '../../redux/actionButtonsSlice';
 import { EventStatus, HeadlampEventType, useEventCallback } from '../../redux/headlampEventSlice';
@@ -60,6 +62,7 @@ import LightTooltip from '../common/Tooltip/TooltipLight';
 import { PodDiagnosticsSection } from '../diagnostics/Diagnostics';
 import { useLocalStorageState } from '../globalSearch/useLocalStorageState';
 import AddToViewButton from '../views/AddToViewButton';
+import { PodCpuCircularChart, PodMemoryCircularChart } from './Charts';
 import { colorizePrettifiedLog } from './jsonHandling';
 import { makePodStatusLabel } from './List';
 import { PodDebugAction } from './PodDebugAction';
@@ -539,6 +542,39 @@ export function VolumeDetails(props: VolumeDetailsProps) {
   );
 }
 
+function PodMetricsSection(props: { pod: Pod }) {
+  const { pod } = props;
+  const { t } = useTranslation(['glossary', 'translation']);
+  const [podMetrics, metricsError] = PodMetrics.useGet(pod.getName(), pod.getNamespace(), {
+    cluster: pod.cluster,
+  });
+
+  return (
+    <SectionBox title={t('translation|Metrics')}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <AddToViewButton
+          item={{
+            type: 'pod-metrics',
+            cluster: pod.cluster,
+            namespace: pod.getNamespace() ?? '',
+            podName: pod.getName(),
+          }}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 2,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+        }}
+      >
+        <PodCpuCircularChart pod={pod} metrics={podMetrics} noMetrics={!!metricsError} />
+        <PodMemoryCircularChart pod={pod} metrics={podMetrics} noMetrics={!!metricsError} />
+      </Box>
+    </SectionBox>
+  );
+}
+
 function TolerationsSection(props: { tolerations: any[] }) {
   const { tolerations } = props;
   const { t } = useTranslation(['glossary', 'translation']);
@@ -921,6 +957,10 @@ export default function PodDetails(props: PodDetailsProps) {
       extraInfo={item => prepareExtraInfo(item)}
       extraSections={(item, context) =>
         item && [
+          {
+            id: 'headlamp.pod-metrics',
+            section: <PodMetricsSection pod={item} />,
+          },
           {
             id: 'headlamp.pod-diagnostics',
             section: (

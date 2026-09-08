@@ -31,6 +31,13 @@ const newMetricsItem: NewViewItem = {
   nodeName: 'my-node',
 };
 
+const newPodMetricsItem: NewViewItem = {
+  type: 'pod-metrics',
+  cluster: 'cluster1',
+  namespace: 'default',
+  podName: 'my-pod',
+};
+
 describe('useViews', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -178,5 +185,17 @@ describe('useViews', () => {
 
     const stored = JSON.parse(localStorage.getItem(VIEWS_STORAGE_KEY)!);
     expect(stored[0].items[0].layout).toEqual(newLayout);
+  });
+
+  it('adds a pod metrics item to a view', () => {
+    const { result } = renderHook(() => useViews());
+
+    act(() => {
+      result.current.addItemToNewView('New view', newPodMetricsItem);
+    });
+
+    expect(result.current.views).toHaveLength(1);
+    expect(result.current.views[0].items).toHaveLength(1);
+    expect(result.current.views[0].items[0]).toMatchObject(newPodMetricsItem);
   });
 });

@@ -1003,7 +1003,7 @@
   "Add to new view…": "Add to new view…",
   "New view": "New view",
   "View not found.": "View not found.",
-  "This view is empty. Add metrics or logs windows to it from resources, e.g. from a node or from pod logs.": "This view is empty. Add metrics or logs windows to it from resources, e.g. from a node or from pod logs.",
+  "This view is empty. Add metrics or logs windows to it from resources, e.g. from a node, a pod, or from pod logs.": "This view is empty. Add metrics or logs windows to it from resources, e.g. from a node, a pod, or from pod logs.",
   "Remove from view": "Remove from view",
   "Loading logs…": "Loading logs…",
   "Loading metrics…": "Loading metrics…",

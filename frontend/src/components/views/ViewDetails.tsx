@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import Node from '../../lib/k8s/node';
 import Pod from '../../lib/k8s/pod';
+import { PodMetrics } from '../../lib/k8s/PodMetrics';
 import { CpuCircularChart, MemoryCircularChart } from '../cluster/Charts';
 import { ClusterGroupErrorMessage } from '../cluster/ClusterGroupErrorMessage';
 import ActionButton from '../common/ActionButton';
@@ -29,7 +30,15 @@ import EmptyContent from '../common/EmptyContent';
 import Loader from '../common/Loader';
 import { LogViewer } from '../common/LogViewer';
 import SectionBox from '../common/SectionBox';
-import { LogsViewItem, MetricsViewItem, useViews, ViewItem, ViewItemLayout } from './useViews';
+import { PodCpuCircularChart, PodMemoryCircularChart } from '../pod/Charts';
+import {
+  LogsViewItem,
+  MetricsViewItem,
+  PodMetricsViewItem,
+  useViews,
+  ViewItem,
+  ViewItemLayout,
+} from './useViews';
 
 const MIN_WINDOW_WIDTH = 250;
 const MIN_WINDOW_HEIGHT = 180;
@@ -58,7 +67,7 @@ export default function ViewDetails() {
       {view.items.length === 0 ? (
         <EmptyContent>
           {t(
-            'translation|This view is empty. Add metrics or logs windows to it from resources, e.g. from a node or from pod logs.'
+            'translation|This view is empty. Add metrics or logs windows to it from resources, e.g. from a node, a pod, or from pod logs.'
           )}
         </EmptyContent>
       ) : (
@@ -173,9 +182,14 @@ function ViewWindow(props: ViewWindowProps) {
     };
   }
 
-  const title = item.type === 'logs' ? `${item.podName} (${item.container})` : `${item.nodeName}`;
-  const subtitle =
+  const title =
     item.type === 'logs'
+      ? `${item.podName} (${item.container})`
+      : item.type === 'pod-metrics'
+      ? item.podName
+      : item.nodeName;
+  const subtitle =
+    item.type === 'logs' || item.type === 'pod-metrics'
       ? `${item.cluster} / ${item.namespace}`
       : `${item.cluster} / ${t('glossary|Nodes')}`;
 
@@ -223,7 +237,13 @@ function ViewWindow(props: ViewWindowProps) {
         />
       </Box>
       <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'auto' }}>
-        {item.type === 'logs' ? <LogsWindow item={item} /> : <MetricsWindow item={item} />}
+        {item.type === 'logs' ? (
+          <LogsWindow item={item} />
+        ) : item.type === 'pod-metrics' ? (
+          <PodMetricsWindow item={item} />
+        ) : (
+          <MetricsWindow item={item} />
+        )}
       </Box>
       <Box
         {...makeDragHandlers('resize')}
@@ -336,6 +356,41 @@ function MetricsWindow(props: { item: MetricsViewItem }) {
     >
       <CpuCircularChart items={[node]} itemsMetrics={nodeMetrics} noMetrics={!!metricsError} />
       <MemoryCircularChart items={[node]} itemsMetrics={nodeMetrics} noMetrics={!!metricsError} />
+    </Box>
+  );
+}
+
+/**
+ * Contents of a pod metrics window: shows the CPU and memory usage charts of the pod,
+ * relative to its containers' resource requests/limits.
+ */
+function PodMetricsWindow(props: { item: PodMetricsViewItem }) {
+  const { item } = props;
+  const [pod, error] = Pod.useGet(item.podName, item.namespace, { cluster: item.cluster });
+  const [podMetrics, metricsError] = PodMetrics.useGet(item.podName, item.namespace, {
+    cluster: item.cluster,
+  });
+  const { t } = useTranslation();
+
+  if (error) {
+    return <ClusterGroupErrorMessage errors={[error]} />;
+  }
+
+  if (!pod) {
+    return <Loader title={t('translation|Loading metrics…')} />;
+  }
+
+  return (
+    <Box
+      sx={{
+        display: 'grid',
+        gap: 2,
+        padding: 2,
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))',
+      }}
+    >
+      <PodCpuCircularChart pod={pod} metrics={podMetrics} noMetrics={!!metricsError} />
+      <PodMemoryCircularChart pod={pod} metrics={podMetrics} noMetrics={!!metricsError} />
     </Box>
   );
 }

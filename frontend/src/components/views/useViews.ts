@@ -45,12 +45,23 @@ export interface MetricsViewItem {
   layout: ViewItemLayout;
 }
 
-export type ViewItem = LogsViewItem | MetricsViewItem;
+/** A window showing the CPU/memory metrics of a pod (e.g. from a workload's pods). */
+export interface PodMetricsViewItem {
+  id: string;
+  type: 'pod-metrics';
+  cluster: string;
+  namespace: string;
+  podName: string;
+  layout: ViewItemLayout;
+}
+
+export type ViewItem = LogsViewItem | MetricsViewItem | PodMetricsViewItem;
 
 /** Input for adding a new window to a view: the layout and id are assigned automatically. */
 export type NewViewItem =
   | Omit<LogsViewItem, 'id' | 'layout'>
-  | Omit<MetricsViewItem, 'id' | 'layout'>;
+  | Omit<MetricsViewItem, 'id' | 'layout'>
+  | Omit<PodMetricsViewItem, 'id' | 'layout'>;
 
 /** A user defined canvas holding metrics and logs windows. */
 export interface View {
