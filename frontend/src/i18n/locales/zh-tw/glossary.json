@@ -253,6 +253,7 @@
   "Image Pull Secrets": "",
   "Automount Service Account Token": "",
   "Map": "地圖",
+  "Views": "",
   "Workloads": "工作負載",
   "Stateful Sets": "Stateful Sets",
   "CronJobs": "排程工作",

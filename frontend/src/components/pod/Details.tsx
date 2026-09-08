@@ -59,6 +59,7 @@ import Terminal from '../common/Terminal';
 import LightTooltip from '../common/Tooltip/TooltipLight';
 import { PodDiagnosticsSection } from '../diagnostics/Diagnostics';
 import { useLocalStorageState } from '../globalSearch/useLocalStorageState';
+import AddToViewButton from '../views/AddToViewButton';
 import { colorizePrettifiedLog } from './jsonHandling';
 import { makePodStatusLabel } from './List';
 import { PodDebugAction } from './PodDebugAction';
@@ -493,6 +494,15 @@ export function PodLogViewer(props: PodLogViewerProps) {
             />
           </LightTooltip>
         ),
+        <AddToViewButton
+          item={{
+            type: 'logs',
+            cluster: item.cluster,
+            namespace: item.metadata?.namespace ?? '',
+            podName: item.metadata?.name ?? '',
+            container,
+          }}
+        />,
       ].filter(Boolean)}
       {...other}
     />

@@ -223,6 +223,20 @@ const defaultRoutes: { [routeName: string]: Route } = {
       }))
     ),
   },
+  views: {
+    path: '/views',
+    exact: true,
+    name: 'Views',
+    sidebar: 'views',
+    component: React.lazy(() => import('../../components/views/ViewList')),
+  },
+  view: {
+    path: '/views/:id',
+    exact: true,
+    name: 'View',
+    sidebar: 'views',
+    component: React.lazy(() => import('../../components/views/ViewDetails')),
+  },
   namespaces: {
     path: '/namespaces',
     name: 'Namespaces',

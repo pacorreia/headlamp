@@ -253,6 +253,7 @@
   "Image Pull Secrets": "",
   "Automount Service Account Token": "",
   "Map": "میپ",
+  "Views": "",
   "Workloads": "ورک لوڈز",
   "Stateful Sets": "اسٹیٹ فل سیٹس",
   "CronJobs": "کرون جابز",

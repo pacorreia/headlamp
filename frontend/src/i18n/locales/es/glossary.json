@@ -253,6 +253,7 @@
   "Image Pull Secrets": "",
   "Automount Service Account Token": "",
   "Map": "",
+  "Views": "",
   "Workloads": "Cargas de Trabajo",
   "Stateful Sets": "Stateful Sets",
   "CronJobs": "CronJobs",

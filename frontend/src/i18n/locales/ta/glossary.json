@@ -253,6 +253,7 @@
   "Image Pull Secrets": "",
   "Automount Service Account Token": "",
   "Map": "வரைபடம்",
+  "Views": "",
   "Workloads": "வொர்க்லோட்கள்",
   "Stateful Sets": "ஸ்டேட்ஃபுல் செட்ஸ்",
   "CronJobs": "க்ரான்ஜாப்ஸ்",
