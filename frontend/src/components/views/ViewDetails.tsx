@@ -275,6 +275,7 @@ function LogsWindow(props: { item: LogsViewItem }) {
     );
 
     return cancel;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pod?.metadata?.uid, item.container]);
 
   if (error) {
