@@ -160,6 +160,21 @@
                 class="MuiBox-root css-1sf3xto"
               >
                 <div
+                  class="MuiBox-root css-1bvc4cc"
+                >
+                  <button
+                    aria-label="Add to view"
+                    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-whz9ym-MuiButtonBase-root-MuiIconButton-root"
+                    data-mui-internal-clone-element="true"
+                    tabindex="0"
+                    type="button"
+                  >
+                    <span
+                      class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+                    />
+                  </button>
+                </div>
+                <div
                   class="MuiBox-root css-13qwqa5"
                 >
                   <div

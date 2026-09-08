@@ -253,6 +253,7 @@
   "Image Pull Secrets": "",
   "Automount Service Account Token": "",
   "Map": "맵",
+  "Views": "",
   "Workloads": "워크로드",
   "Stateful Sets": "스테이트풀 셋",
   "CronJobs": "크론잡",

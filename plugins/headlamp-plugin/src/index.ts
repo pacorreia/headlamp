@@ -23,6 +23,7 @@ declare module '@mui/private-theming' {
 import { Activity } from './components/activity/Activity';
 import * as CommonComponents from './components/common';
 import * as ResourceMap from './components/resourceMap';
+import * as Views from './components/views';
 import type { AppTheme } from './lib/AppTheme';
 import * as K8s from './lib/k8s';
 import * as ApiProxy from './lib/k8s/apiProxy';
@@ -94,6 +95,7 @@ export {
   K8s as k8s,
   CommonComponents,
   ResourceMap,
+  Views,
   Utils,
   Router,
   Plugin,

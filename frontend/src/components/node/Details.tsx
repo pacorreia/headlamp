@@ -57,6 +57,7 @@ import {
 import AuthVisible from '../common/Resource/AuthVisible';
 import { SectionBox } from '../common/SectionBox';
 import { NameValueTable } from '../common/SimpleTable';
+import AddToViewButton from '../views/AddToViewButton';
 import { NodeShellAction } from './NodeShellAction';
 import { isNodeCordoned, isNodeDrained, NodeTaintsLabel } from './utils';
 
@@ -455,6 +456,13 @@ function ChartsSection(props: ChartsSectionProps) {
 
   return (
     <Box py={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {!!node && (
+          <AddToViewButton
+            item={{ type: 'metrics', cluster: node.cluster, nodeName: node.getName() }}
+          />
+        )}
+      </Box>
       <Box
         sx={{
           display: 'grid',
