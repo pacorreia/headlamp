@@ -140,6 +140,20 @@ function ViewWindow(props: ViewWindowProps) {
     setLayout(newLayout);
   }
 
+  function endDrag(event: React.PointerEvent) {
+    const dragState = dragStateRef.current;
+    if (!dragState) {
+      return;
+    }
+    (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
+    dragStateRef.current = null;
+    onLayoutChange(layoutRef.current);
+    if (dragState.mode === 'resize') {
+      // Let embedded terminals refit to the new size.
+      window.dispatchEvent(new Event('resize'));
+    }
+  }
+
   function makeDragHandlers(mode: DragState['mode']) {
     return {
       onPointerDown: (event: React.PointerEvent) => {
@@ -153,16 +167,9 @@ function ViewWindow(props: ViewWindowProps) {
         };
       },
       onPointerMove: applyDrag,
-      onPointerUp: (event: React.PointerEvent) => {
-        if (!dragStateRef.current) {
-          return;
-        }
-        (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
-        dragStateRef.current = null;
-        onLayoutChange(layoutRef.current);
-        // Let embedded terminals refit to the new size.
-        window.dispatchEvent(new Event('resize'));
-      },
+      onPointerUp: endDrag,
+      onPointerCancel: endDrag,
+      onLostPointerCapture: endDrag,
     };
   }
 
@@ -212,6 +219,7 @@ function ViewWindow(props: ViewWindowProps) {
           icon="mdi:close"
           description={t('translation|Remove from view')}
           onClick={onRemove}
+          iconButtonProps={{ onPointerDown: event => event.stopPropagation() }}
         />
       </Box>
       <Box sx={{ flexGrow: 1, minHeight: 0, overflow: 'auto' }}>
@@ -245,6 +253,8 @@ function LogsWindow(props: { item: LogsViewItem }) {
   const [logs, setLogs] = React.useState<string[]>([]);
   const { t } = useTranslation();
 
+  const tailLines = 100;
+
   React.useEffect(() => {
     if (!pod) {
       return;
@@ -254,10 +264,12 @@ function LogsWindow(props: { item: LogsViewItem }) {
     const cancel = pod.getLogs(
       item.container,
       ({ logs: newLogs }: { logs: string[] }) => {
-        setLogs([...newLogs]);
+        // Keep the rendered log lines bounded, since newLogs grows indefinitely
+        // while following.
+        setLogs(newLogs.slice(-tailLines));
       },
       {
-        tailLines: 100,
+        tailLines,
         follow: true,
       }
     );
