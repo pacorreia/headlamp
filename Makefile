@@ -79,6 +79,7 @@ else
 	cd backend && tools\golangci-lint.exe run --fix
 endif
 
+.PHONY: frontend/build
 frontend/build:
 	make frontend
 
