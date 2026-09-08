@@ -550,17 +550,22 @@ function PodMetricsSection(props: { pod: Pod }) {
   });
 
   return (
-    <SectionBox title={t('translation|Metrics')}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <AddToViewButton
-          item={{
-            type: 'pod-metrics',
-            cluster: pod.cluster,
-            namespace: pod.getNamespace() ?? '',
-            podName: pod.getName(),
-          }}
-        />
-      </Box>
+    <SectionBox
+      title={t('translation|Metrics')}
+      headerProps={{
+        headerStyle: 'subsection',
+        actions: [
+          <AddToViewButton
+            item={{
+              type: 'pod-metrics',
+              cluster: pod.cluster,
+              namespace: pod.getNamespace() ?? '',
+              podName: pod.getName(),
+            }}
+          />,
+        ],
+      }}
+    >
       <Box
         sx={{
           display: 'grid',
